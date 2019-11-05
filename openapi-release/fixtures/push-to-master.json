@@ -1,0 +1,9 @@
+{
+  "after": "34e6b602668b883822364f3f5b87c3940269dcf3",
+  "repository": {
+    "name": "api-specification",
+    "owner": {
+      "name": "nexmo"
+    }
+  }
+}
