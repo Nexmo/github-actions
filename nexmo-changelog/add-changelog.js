@@ -10,8 +10,9 @@ const tools = new Toolkit();
         process.exit(0);
     }
 
-    if (tools.context.payload.action !== "published") {
-        console.log(`Release status is not 'published'. Got '${tools.context.payload.action}'`);
+    const allowedStatuses = ['published', 'edited'];
+    if (allowedStatuses.indexOf(tools.context.payload.action) === -1) {
+        console.log(`Release status is not in '${allowedStatuses.join(', ')}'. Got '${tools.context.payload.action}'`);
         process.exit(0);
     }
 
