@@ -41,16 +41,19 @@ Toolkit.run(async tools => {
   tools.log.pending('Looking for renamed and removed files');
   let changedFiles = [];
   for (let file of changes.data.files) {
+    let from, to;
     if (file.status == 'renamed') {
       if (file.previous_filename.substr(0, 14) != '_documentation') {
         tools.log.warn(`Ignorning renamed file not in _documentation folder: ${file.previous_filename}`);
         continue;
       }
 
-      changedFiles.push({
-        from: file.previous_filename,
-        to: pathToUrl(file.filename),
-      });
+      if (!fileBecameTabbedFolder(file.previous_filename, tools)) {
+        changedFiles.push({
+          from: file.previous_filename,
+          to: pathToUrl(file.filename),
+        });
+      }
     }
 
     if (file.status == 'removed') {
@@ -59,10 +62,12 @@ Toolkit.run(async tools => {
         continue;
       }
 
-      changedFiles.push({
-        from: file.filename,
-        to: 'MISSING'
-      });
+      if (!fileBecameTabbedFolder(file.filename, tools)) {
+        changedFiles.push({
+          from: file.filename,
+          to: 'MISSING'
+        });
+      }
     }
   }
   tools.log.complete('Looking for renamed and removed files');
@@ -128,4 +133,18 @@ function getLocaleFromPath(path) {
 
 function pathToUrl(path) {
     return path.substr(17).slice(0, -3);
+}
+
+function fileBecameTabbedFolder(filename, tools) {
+    // Remove the last segment the try and load the config file
+    filename = filename.slice(0, filename.lastIndexOf('/'));
+    filename += "/.config.yml"
+    try {
+        const config = yaml.parse(tools.getFile(filename));
+        return config.tabbed;
+    } catch (e){
+        // File didn't exist, or it wasn't YAML. Either way, it's not a
+        // tabbed folder
+        return false;
+    }
 }

@@ -77,20 +77,27 @@ describe("Check Redirects Action", () => {
         head,
         changes
       );
+
+      // We don't have tabbed files for these tests
+      tools.getFile
+        .mockReturnValueOnce("---\ntabbed: false")
+        .mockReturnValueOnce("---\ntabbed: false")
+        .mockReturnValueOnce("---\ntabbed: false")
     });
 
     describe("With a corresponding redirect", () => {
-      it("exits with a success status code if there's a corresponding file that matches the redirect", async () => {
-        tools.getFile.mockReturnValueOnce(
-          `---
-          /file1_old: /file1
-          /file2: /file1
-          `
-        ).mockReturnValueOnce(
-          `---
-          /client-sdk/file3_old: /client-sdk/file3
-          `
-        );
+        it("exits with a success status code if there's a corresponding file that matches the redirect", async () => {
+          tools.getFile.mockReturnValueOnce(
+            `---
+            /file1_old: /file1
+            /file2: /file1
+            `
+          ).mockReturnValueOnce(
+            `---
+            /client-sdk/file3_old: /client-sdk/file3
+            `
+          );
+
         fs.existsSync = jest.fn()
           .mockReturnValueOnce(true)
           .mockReturnValueOnce(true)
@@ -208,8 +215,84 @@ Specified redirect could not be found: /tmp/_documentation/en/file2-invalid.md`
       expect(tools.exit.success).toHaveBeenCalledWith("No missing redirects");
     });
   });
-});
 
+  describe("Tabbed folders", () => {
+    let changes = {
+      "files": [
+        {
+          "filename": "_documentation/en/test-folder/something/page-that-has-includes.md",
+          "status": "removed",
+        },
+      ]
+    };
+
+    beforeEach(() => {
+      mockCommitDiff(
+        repo,
+        owner,
+        base,
+        head,
+        changes
+      );
+    });
+
+
+    it("exits with a success code", async () => {
+        tools.getFile.mockReturnValueOnce(
+          `---
+           tabbed: true
+          `
+        );
+
+      await action(tools);
+      expect(tools.exit.success).toHaveBeenCalledWith("No missing redirects");
+    });
+
+    it("exits with a failure code if it's not a tabbed folder", async () => {
+        tools.getFile.mockReturnValueOnce(
+          `---
+           tabbed: false
+          `
+        ).
+        mockReturnValueOnce(
+          `---
+          /fake: /redirect
+          `
+        ).
+        mockReturnValueOnce(
+          `---
+          `
+        );
+
+      await action(tools);
+      expect(tools.exit.failure).toHaveBeenCalledWith(
+          `Missing redirects: 
+
+"/test-folder/something/page-that-has-includes": "MISSING"`);
+    });
+
+
+    it("exits with a failure code if .config.yml is invalid JSON", async () => {
+      tools.getFile.mockReturnValueOnce(`invalid json`)
+        .mockReturnValueOnce(
+          `---
+          /fake: /redirect
+          `
+        )
+        .mockReturnValueOnce(
+          `---
+          `
+        );
+
+
+      await action(tools);
+      expect(tools.exit.failure).toHaveBeenCalledWith(
+          `Missing redirects: 
+
+"/test-folder/something/page-that-has-includes": "MISSING"`);
+    });
+  });
+});
 
 function mockCommitDiff(repo, owner, base, head, body) {
   nock("https://api.github.com")
