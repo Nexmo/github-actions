@@ -1,0 +1,9 @@
+name: 'Check Docs Changes'
+description: 'Check for changes to documentation during last push to master branch'
+author: 'Ben Geenberg'
+branding:
+  icon: 'check-circle'
+  color: 'orange'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

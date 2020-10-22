@@ -1,0 +1,15 @@
+{
+  "name": "check-docs-changes",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "actions-toolkit": "^2.1.0",
+    "jest": "^24.9.0",
+    "nock": "^11.7.0"
+  }
+}
