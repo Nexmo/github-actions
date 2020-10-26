@@ -32,7 +32,10 @@ Toolkit.run(async tools => {
     }
   }
 
-  console.log(changedFiles)
+  // convert array to string object for JSON parsing
+  changedFiles = JSON.stringify(changedFiles)
+
+  // set variable accessible in GitHub Actions workflow
   core.setOutput('matrix', changedFiles)
   
   if (changedFiles.length) {
