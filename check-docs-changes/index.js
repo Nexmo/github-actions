@@ -33,7 +33,7 @@ Toolkit.run(async tools => {
   }
 
   console.log(changedFiles)
-  core.setOutput('CHANGEDFILES', changedFiles)
+  core.setOutput('matrix', changedFiles)
   
   if (changedFiles.length) {
     changedFiles
