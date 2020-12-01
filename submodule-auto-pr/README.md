@@ -31,8 +31,8 @@ jobs:
 
 ## Configuration
 
-- `GH_ADMIN_TOKEN` - a custom github token to use to make API requests. The default `GITHUB_TOKEN` provided is scoped to the current repo, and we want to change other repos
-- `PR_TARGET_ORG` - the name of the organisation that owns the repo that a PR will be created on
+- `GH_ADMIN_TOKEN` - a custom GitHub token to use to make API requests. The default `GITHUB_TOKEN` provided is scoped to the current repo, and we want to change other repos
+- `PR_TARGET_ORG` - the name of the organization that owns the repo that a PR will be created on
 - `PR_TARGET_REPO` - the name of the repo that a PR will be created on
 - `PR_SUBMODULE_PATH` - the path to the submodule that needs updating
 - `PR_BRANCH_NAME` - the name of the branch to create when updating submodules

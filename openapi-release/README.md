@@ -26,7 +26,7 @@ jobs:
 
 ## Configuration
 
-- `GH_ADMIN_TOKEN` - a custom github token to use to make API requests. This is needed as if Github actions creates a release, it doesn't trigger the release event for actions
+- `GH_ADMIN_TOKEN` - a custom GitHub token to use to make API requests. This is needed if the Github action creates a release, it doesn't trigger the release event for actions
 - `OAS_RELEASE_ACTIVE_BRANCH` - check if the push was to this branch before continuing (usually `master`)
 
 ## How it works
