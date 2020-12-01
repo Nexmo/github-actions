@@ -45,36 +45,44 @@ listener.on('fizz', (event) => {
 
 ## Installation
 
-Create a file at `.github/main.workflow` with the following contents:
+Create a file at `.github/workflows/release.yml` with the following contents:
 
-```hcl
-workflow "New release" {
-  on = "release"
-  resolves = ["Add Changelog"]
-}
-
-action "Add Changelog" {
-  uses = "nexmo/github-actions/nexmo-changelog@master"
-  secrets = ["CHANGELOG_AUTH_TOKEN"]
-  env = {
-    NEXMO_CATEGORY = "YOUR_CATEGORY (See below)"
-  }
-}
+```yaml
+on:
+  release:
+    types: [published, edited, prereleased]
+name: New release
+jobs:
+  addChangelog:
+    name: Add Changelog
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Add Changelog
+        uses: nexmo/github-actions/nexmo-changelog@master
+        env:
+          CHANGELOG_AUTH_TOKEN: ${{ secrets.CHANGELOG_AUTH_TOKEN }}
+          CHANGELOG_CATEGORY: API
+          CHANGELOG_SUBCATEGORY: N/A
 ```
 
 Make sure to set a category and to set any additional environment variables (see below) if required e.g. `CHANGELOG_DISABLE_REPO_LINK`
 
 ## Configuration
 
-To use this action you must configure the username/password as secrets, and *may* configure the behaviour of the action using environment variables
+To use this action you must configure the username/password as secrets, and _may_ configure the behaviour of the action using environment variables
 
 ### Secrets
 
-* `CHANGELOG_AUTH_TOKEN` - The auth token to use, speak to @mheap if you need this
+- `CHANGELOG_AUTH_TOKEN` - The auth token to use, speak to @mheap if you need this
 
 ### ENV variables
 
-* `CHANGELOG_RELEASE_TITLE` - Specify the title to be used for changelog entries (Defaults to the repository name)
-* `CHANGELOG_DISABLE_REPO_LINK` - By default a link to the release on Github is added to the changelog content. Set to `true` to disable this functionality (Defaults to `false`)
-* `CHANGELOG_CATEGORY` - Choose the category to use. Must be one of: `Client SDK`, `Server SDK`, `API`, `General`. (Defaults to `General`)
-* `CHANGELOG_SUBCATEGORY` - An additional field that can be used for tagging. This will usually be the language for SDKs, or the product for API updates
+- `CHANGELOG_RELEASE_TITLE` - Specify the title to be used for changelog entries. This will be prepended to the value specified for the release name
+- `CHANGELOG_DISABLE_REPO_LINK` - By default a link to the release on Github is added to the changelog content. Set to `true` to disable this functionality (Defaults to `false`)
+- `CHANGELOG_CATEGORY` - Choose the category to use. Must be one of: `Client SDK`, `Server SDK`, `API`, `General`. (Defaults to `General`)
+- `CHANGELOG_SUBCATEGORY` - An additional field that can be used for tagging. This will usually be the language for SDKs, or the product for API updates
+
+## How it works
+
+- When a release is tagged, send a HTTP request to the custom built Nexmo changelog with the release title, body and URL. It also sends the values of `CHANGELOG_CATEGORY` and `CHANGELOG_SUBCATEGORY`
