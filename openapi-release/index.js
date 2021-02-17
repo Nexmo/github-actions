@@ -4,7 +4,7 @@ const semver = require("semver");
 
 Toolkit.run(async (tools) => {
   const requiredActiveBranch =
-    process.env.OAS_RELEASE_ACTIVE_BRANCH || "master";
+    process.env.OAS_RELEASE_ACTIVE_BRANCH || "main";
 
   tools.log.info(`Running on ${tools.context.ref}`);
   if (tools.context.ref != `refs/heads/${requiredActiveBranch}`) {

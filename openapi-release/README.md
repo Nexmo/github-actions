@@ -11,7 +11,7 @@ name: OpenAPI Release
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   releaseOAS:
     name: Release OAS
@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Release OAS
-        uses: nexmo/github-actions/openapi-release@master
+        uses: nexmo/github-actions/openapi-release@main
         env:
           GH_ADMIN_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
 ```
@@ -27,7 +27,7 @@ jobs:
 ## Configuration
 
 - `GH_ADMIN_TOKEN` - a custom GitHub token to use to make API requests. This is needed if the Github action creates a release, it doesn't trigger the release event for actions
-- `OAS_RELEASE_ACTIVE_BRANCH` - check if the push was to this branch before continuing (usually `master`)
+- `OAS_RELEASE_ACTIVE_BRANCH` - check if the push was to this branch before continuing (usually `main`)
 
 ## How it works
 

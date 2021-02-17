@@ -6,7 +6,7 @@ process.env.GITHUB_ACTION = "openapi-release";
 process.env.GITHUB_ACTOR = "nexmodev";
 process.env.GITHUB_REPOSITORY = "nexmo/api-specification";
 process.env.GITHUB_EVENT_NAME = "push";
-process.env.GITHUB_EVENT_PATH = __dirname + "/fixtures/push-to-master.json";
+process.env.GITHUB_EVENT_PATH = __dirname + "/fixtures/push-to-main.json";
 process.env.GITHUB_WORKSPACE = "/tmp";
 process.env.GITHUB_SHA = "abc123";
 
@@ -22,18 +22,18 @@ describe("OAS Release Action", () => {
 
   beforeEach(() => {
     tools = new Toolkit();
-    tools.context.ref = "refs/heads/master";
+    tools.context.ref = "refs/heads/main";
     tools.log.debug = jest.fn();
     tools.log.info = jest.fn();
   });
 
   describe("Ensure that we're on the correct branch", () => {
-    it("default branch (master)", () => {
+    it("default branch (main)", () => {
       tools.exit.neutral = jest.fn();
       tools.context.ref = "refs/heads/other-branch";
       action(tools);
       expect(tools.exit.neutral).toHaveBeenCalledWith(
-        `Expected refs/heads/master, got ${tools.context.ref}. Stopping execution`
+        `Expected refs/heads/main, got ${tools.context.ref}. Stopping execution`
       );
     });
 
@@ -55,7 +55,7 @@ describe("OAS Release Action", () => {
 
       nock("https://api.github.com")
         .get(`/repos/${owner}/${repo}/releases?per_page=1&page=1`)
-        .reply(200, [{ target_commitish: "master" }]);
+        .reply(200, [{ target_commitish: "main" }]);
 
       tools.exit.failure = jest.fn();
       await action(tools);
