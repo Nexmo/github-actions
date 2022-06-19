@@ -14,7 +14,7 @@
     "actions-toolkit": "^2.1.0"
   },
   "devDependencies": {
-    "eslint": "^5.10.0",
+    "eslint": "^8.0.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
     "prettier": "^1.15.3",
